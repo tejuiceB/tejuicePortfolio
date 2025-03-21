@@ -24,12 +24,22 @@ export async function getRepos() {
   return response.json();
 }
 
+interface GithubEvent {
+  type: string;
+  payload: {
+    commits: Array<{
+      sha: string;
+      message: string;
+    }>;
+  };
+}
+
 export async function getCommits() {
   if (!currentUsername) throw new Error('GitHub username not set');
   const response = await fetch(`${GITHUB_API}/users/${currentUsername}/events`);
   if (!response.ok) throw new Error('Failed to fetch commits');
   const events = await response.json();
-  return events.filter((event: any) => event.type === 'PushEvent').slice(0, 5);
+  return events.filter((event: GithubEvent) => event.type === 'PushEvent').slice(0, 5);
 }
 
 export async function getPullRequests() {
@@ -38,3 +48,7 @@ export async function getPullRequests() {
   if (!response.ok) throw new Error('Failed to fetch pull requests');
   return response.json();
 }
+export function getRepositories() {
+  throw new Error('Function not implemented.');
+}
+

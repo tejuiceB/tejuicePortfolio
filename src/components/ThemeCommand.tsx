@@ -2,69 +2,33 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useTheme } from '@/context/ThemeContext';
-import TypewriterText from './TypewriterText';
 import dynamic from 'next/dynamic';
 import * as githubService from '@/services/github';
+
+interface GitHubRepo {
+  name: string;
+  description: string | null;
+  stargazers_count: number;
+}
 
 const Snake = dynamic(() => import('./games/Snake'), { ssr: false });
 const Tetris = dynamic(() => import('./games/Tetris'), { ssr: false });
 const MorseCode = dynamic(() => import('./games/MorseCode'), { ssr: false });
 
-const skillTree = {
-  'Development': {
-    'Programming Languages': {
-      'Java': '████████ 80%',
-      'Python': '█████████ 90%',
-      'JavaScript': '████████ 80%',
-      'TypeScript': '███████ 70%'
-    },
-    'Web Technologies': {
-      'Frontend': {
-        'HTML/CSS': '█████████ 90%',
-        'ReactJS': '████████ 80%',
-        'Next.js': '███████ 70%',
-        'Tailwind': '████████ 80%'
-      },
-      'Backend': {
-        'Node.js': '████████ 80%',
-        'Django': '████████ 80%',
-        'Spring Boot': '███████ 70%',
-        'Express': '███████ 70%'
-      }
-    },
-    'Databases': {
-      'SQL': {
-        'MySQL': '████████ 80%',
-        'PostgreSQL': '████████ 80%'
-      },
-      'NoSQL': {
-        'MongoDB': '███████ 70%',
-        'Firebase': '██████ 60%'
-      }
-    }
-  },
-  'DevOps & Tools': {
-    'Version Control': {
-      'Git': '█████████ 90%',
-      'GitHub': '█████████ 90%'
-    },
-    'Containers': {
-      'Docker': '███████ 70%',
-      'Kubernetes': '██████ 60%'
-    },
-    'CI/CD': {
-      'Jenkins': '██████ 60%',
-      'GitHub Actions': '███████ 70%'
-    }
-  },
-  'Soft Skills': {
-    'Communication': '█████████ 90%',
-    'Team Leadership': '████████ 80%',
-    'Problem Solving': '█████████ 90%',
-    'Time Management': '████████ 80%',
-    'Agile Methodology': '████████ 80%'
+export async function getRepositories(): Promise<GitHubRepo[]> {
+  const username = getGithubUsername();
+  if (!username) {
+    throw new Error('GitHub username not set');
   }
-};
+
+  const response = await fetch(`https://api.github.com/users/${username}/repos?sort=stars&direction=desc`);
+  
+  if (!response.ok) {
+    throw new Error('Failed to fetch repositories');
+  }
+
+  return response.json();
+}
 
 const marvelQuotes = [
   "JARVIS: All systems operational, sir.",
@@ -81,7 +45,6 @@ export default function ThemeCommand() {
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [currentGame, setCurrentGame] = useState<string | null>(null);
-  const [githubData, setGithubData] = useState<any>(null);
   const [morseMode, setMorseMode] = useState<'encode' | 'decode' | 'learn'>('encode');
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -124,7 +87,9 @@ export default function ThemeCommand() {
     setHistoryIndex(-1);
   }, [command]);
 
-  const renderSkillTree = (tree: any, level = 0): string[] => {
+  type SkillTree = { [key: string]: SkillTree | string };
+  
+  const renderSkillTree = (tree: SkillTree, level = 0): string[] => {
     const lines: string[] = [];
     Object.entries(tree).forEach(([key, value], index, array) => {
       const isLast = index === array.length - 1;
@@ -262,13 +227,13 @@ export default function ThemeCommand() {
         .catch(() => setHistory(prev => [...prev, 'Error fetching GitHub status']));
     } else if (cmd === 'gh repos') {
       setHistory(prev => [...prev, 'Fetching repositories...']);
-      githubService.getRepos()
-        .then(repos => {
+      githubService.getRepositories()
+        .then((repos) => {
           setHistory(prev => [
             ...prev,
             '',
             'Repositories:',
-            ...repos.map((repo: any) => 
+            ...repos.map((repo: GitHubRepo) => 
               `${repo.name} - ${repo.description || 'No description'} (⭐ ${repo.stargazers_count})`
             )
           ]);
@@ -417,7 +382,7 @@ export default function ThemeCommand() {
       {currentGame === 'snake' && (
         <div className="mt-4 space-y-2">
           <div className="flex justify-between text-gray-400 text-sm">
-            <span>Type "close" to exit game</span>
+            <span>Type &quot;close&quot; to exit game</span>
           </div>
           <Snake />
         </div>
@@ -425,7 +390,7 @@ export default function ThemeCommand() {
       {currentGame === 'tetris' && (
         <div className="mt-4 space-y-2">
           <div className="flex justify-between text-gray-400 text-sm">
-            <span>Type "close" to exit game</span>
+            <span>Type &quot;close&quot; to exit game</span>
           </div>
           <Tetris />
         </div>
@@ -437,8 +402,8 @@ export default function ThemeCommand() {
       )}
 
       {/* Command Input */}
-      <div className="flex items-center gap-2 text-gray-400">
-        <span>$</span>
+      <div className="flex items-center gap-2" style={{ color: theme === 'marvel' ? getPromptStyle().color : '#gray-400' }}>
+        <span>{theme === 'marvel' ? getPromptStyle().prefix : '$'}</span>
         <input
           ref={inputRef}
           type="text"
