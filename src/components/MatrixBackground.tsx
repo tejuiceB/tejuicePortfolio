@@ -18,15 +18,11 @@ export default function MatrixBackground() {
     canvas.height = window.innerHeight;
 
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃﾏｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍ';
-    const columns = canvas.width / 20;
-    const drops: number[] = [];
+    const columns = Math.floor(canvas.width / 20);
+    const drops: number[] = Array(columns).fill(1);
 
-    for (let i = 0; i < columns; i++) {
-      drops[i] = 1;
-    }
-
-    function draw() {
-      if (!context || !canvas) return; // Add null check for TypeScript and canvas
+    const draw = () => {
+      if (!context || !canvas) return;
 
       context.fillStyle = theme === 'matrix' ? 
         'rgba(0, 0, 0, 0.1)' : 
@@ -38,20 +34,21 @@ export default function MatrixBackground() {
         '#16C60C';
       context.font = '15px monospace';
 
-      for (let i = 0; i < drops.length; i++) {
+      drops.forEach((drop, i) => {
         const text = characters[Math.floor(Math.random() * characters.length)];
-        context.fillText(text, i * 20, drops[i] * 20);
+        context.fillText(text, i * 20, drop * 20);
 
-        if (drops[i] * 20 > canvas.height && Math.random() > 0.975) {
+        if (drop * 20 > canvas.height && Math.random() > 0.975) {
           drops[i] = 0;
         }
         drops[i]++;
-      }
-    }
+      });
+    };
 
     const interval = setInterval(draw, 50);
 
     const handleResize = () => {
+      if (!canvas) return;
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
