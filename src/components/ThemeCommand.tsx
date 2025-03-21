@@ -56,6 +56,15 @@ interface GithubPR {
   state: string;
 }
 
+// Add skillTree type definition
+interface SkillTreeItem {
+  [key: string]: SkillTreeItem | string;
+}
+
+const skillTree: SkillTreeItem = {
+  // ...existing skillTree object...
+};
+
 export default function ThemeCommand() {
   const { theme, setTheme } = useTheme();
   const [stage, setStage] = useState(0);
@@ -67,6 +76,8 @@ export default function ThemeCommand() {
   const [morseMode, setMorseMode] = useState<'encode' | 'decode' | 'learn'>('encode');
   const inputRef = useRef<HTMLInputElement>(null);
 
+  type ThemeKey = keyof typeof themes;
+  
   const themes = {
     powershell: { bg: '#012456', text: '#16C60C', desc: 'Classic PowerShell Blue' },
     ubuntu: { bg: '#300A24', text: '#FFFFFF', desc: 'Ubuntu Terminal Purple' },
@@ -246,7 +257,7 @@ export default function ThemeCommand() {
         .catch(() => setHistory(prev => [...prev, 'Error fetching GitHub status']));
     } else if (cmd === 'gh repos') {
       setHistory(prev => [...prev, 'Fetching repositories...']);
-      githubService.getRepositories()
+      getRepositories()
         .then((repos) => {
           setHistory(prev => [
             ...prev,
@@ -309,10 +320,10 @@ export default function ThemeCommand() {
       }
       // ...rest of existing gh command handling...
     } else if (cmd.startsWith('morse ')) {
-      const [_, action] = cmd.split(' ');
+      const [, action] = cmd.split(' '); // Ignore first part (command)
       handleMorseCommand(action);
     } else if (Object.keys(themes).includes(cmd)) {
-      setTheme(cmd as any);
+      setTheme(cmd as ThemeKey);
       setHistory(prev => [...prev, `Switching to ${cmd} theme...`]);
       setTimeout(() => {
         setHistory(prev => [...prev, `Theme changed to ${cmd}`]);
@@ -421,8 +432,8 @@ export default function ThemeCommand() {
       )}
 
       {/* Command Input */}
-      <div className="flex items-center gap-2" style={{ color: theme === 'marvel' ? getPromptStyle().color : '#gray-400' }}>
-        <span>{theme === 'marvel' ? getPromptStyle().prefix : '$'}</span>
+      <div className="flex items-center gap-2" style={{ color: theme === 'marvel' ? getPromptStyle()?.color ?? '#64D2FF' : '#gray-400' }}>
+        <span>{theme === 'marvel' ? getPromptStyle()?.prefix || 'JARVIS>' : '$'}</span>
         <input
           ref={inputRef}
           type="text"
@@ -437,3 +448,7 @@ export default function ThemeCommand() {
     </div>
   );
 }
+function getGithubUsername(): string | null {
+  return localStorage.getItem('github-username');
+}
+

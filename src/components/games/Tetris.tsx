@@ -117,7 +117,7 @@ export default function Tetris() {
       // Spawn new piece
       setCurrentPiece(getRandomTetromino());
     }
-  }, [currentPiece, paused, gameOver, isValidMove, mergePieceToBoard]);
+  }, [currentPiece, board, paused, gameOver]);
 
   useEffect(() => {
     const initialBoard = createEmptyBoard();
@@ -126,7 +126,7 @@ export default function Tetris() {
     setGameOver(false);
     setPaused(false);
     setScore(0);
-  }, [createEmptyBoard]);
+  }, []);
 
   useEffect(() => {
     const gameLoop = setInterval(() => {
@@ -176,7 +176,7 @@ export default function Tetris() {
 
     window.addEventListener('keydown', handleKeydown);
     return () => window.removeEventListener('keydown', handleKeydown);
-  }, [currentPiece, paused, gameOver, createEmptyBoard, isValidMove, rotatePiece]);
+  }, [currentPiece, paused, gameOver, moveDown]);
 
   const boardWithPiece = board.map(row => [...row]);
   if (currentPiece) {

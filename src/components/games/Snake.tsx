@@ -101,24 +101,6 @@ export default function Snake() {
     };
   }, [moveSnake, speed]); // Add speed to dependencies
 
-  // Add gameOver to dependencies
-  useEffect(() => {
-    const handleKeydown = (e: KeyboardEvent) => {
-      if (gameOver) return;
-      switch (e.key) {
-        case 'ArrowUp': setDirection('up'); break;
-        case 'ArrowDown': setDirection('down'); break;
-        case 'ArrowLeft': setDirection('left'); break;
-        case 'ArrowRight': setDirection('right'); break;
-        case 'p': setPaused(p => !p); break;
-        case 'r': if (gameOver) window.location.reload(); break;
-      }
-    };
-
-    window.addEventListener('keydown', handleKeydown);
-    return () => window.removeEventListener('keydown', handleKeydown);
-  }, [gameOver]); // Add gameOver to dependency array
-
   const cellColor = theme === 'matrix' ? '#00FF00' : 
                    theme === 'ubuntu' ? '#E95420' : '#16C60C';
 
