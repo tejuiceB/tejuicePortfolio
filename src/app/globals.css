@@ -8,7 +8,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var (--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
@@ -17,6 +17,256 @@
     --background: #0a0a0a;
     --foreground: #ededed;
   }
+}
+
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes growBar {
+  from { width: 0% }
+  to { width: 100% }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes arcReactorGlow {
+  0%, 100% { box-shadow: 0 0 20px #64D2FF; }
+  50% { box-shadow: 0 0 40px #64D2FF; }
+}
+
+@keyframes arcReactorPulse {
+  0% { box-shadow: 0 0 15px #64D2FF, 0 0 30px #64D2FF, 0 0 45px #64D2FF; }
+  50% { box-shadow: 0 0 20px #64D2FF, 0 0 40px #64D2FF, 0 0 60px #64D2FF; }
+  100% { box-shadow: 0 0 15px #64D2FF, 0 0 30px #64D2FF, 0 0 45px #64D2FF; }
+}
+
+@keyframes jarvisBooting {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes jarvisScan {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+.animate-blink {
+  animation: blink 1s infinite;
+}
+
+.animate-bounce {
+  animation: bounce 0.6s infinite;
+}
+
+.terminal-entry {
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.typewriter {
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typing 2s steps(40, end);
+}
+
+/* Theme transitions */
+.theme-transition {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Theme-specific styles */
+[data-theme='powershell'] {
+  --theme-bg: #012456;
+  --theme-primary: #FFFF00;
+  --theme-text: #16C60C;
+  --theme-link: #3B91F7;
+}
+
+[data-theme='monokai'] {
+  --theme-bg: #272822;
+  --theme-primary: #F92672;
+  --theme-text: #F8F8F2;
+  --theme-secondary: #A6E22E;
+  --theme-accent: #66D9EF;
+  --theme-border: #49483E;
+  --theme-link: #AE81FF;
+}
+
+[data-theme='cyberpunk'] {
+  --theme-bg: #000B1E;
+  --theme-primary: #0ABDC6;
+  --theme-text: #00FF9F;
+  --theme-secondary: #FF0055;
+  --theme-accent: #FF00F6;
+  --theme-border: #133E7C;
+  --theme-link: #00B0FF;
+}
+
+[data-theme='nord'] {
+  --theme-bg: #2E3440;
+  --theme-primary: #88C0D0;
+  --theme-text: #D8DEE9;
+  --theme-secondary: #81A1C1;
+  --theme-accent: #5E81AC;
+  --theme-border: #4C566A;
+  --theme-link: #8FBCBB;
+}
+
+[data-theme='synthwave'] {
+  --theme-bg: #241B2F;
+  --theme-primary: #FF7EDB;
+  --theme-text: #F8F8F8;
+  --theme-secondary: #36F9F6;
+  --theme-accent: #FF8B39;
+  --theme-border: #4C2B59;
+  --theme-link: #FC28A8;
+}
+
+[data-theme='hacker'] {
+  --theme-bg: #0D0208;
+  --theme-primary: #39FF14;
+  --theme-text: #00FF41;
+  --theme-secondary: #008F11;
+  --theme-accent: #00FF41;
+  --theme-border: #003B00;
+  --theme-link: #3FFF00;
+}
+
+[data-theme='ubuntu'] {
+  --theme-bg: #300A24;
+  --theme-primary: #E95420;
+  --theme-text: #FFFFFF;
+  --theme-secondary: #AEA79F;
+  --theme-accent: #77216F;
+  --theme-border: #5E2750;
+  --theme-success: #2C901E;
+  --theme-link: #87C7F5;
+}
+
+[data-theme='matrix'] {
+  --theme-bg: #000000;
+  --theme-primary: #00FF00;
+  --theme-text: #00FF00;
+  --theme-secondary: #008F11;
+  --theme-border: #003B00;
+  --theme-accent: #00FF00;
+  --theme-link: #00CC00;
+}
+
+[data-theme='matrix'] section {
+  background-color: rgba(0, 25, 0, 0.4);
+  border-color: #003B00;
+}
+
+[data-theme='matrix'] .theme-primary {
+  text-shadow: 0 0 8px #00FF00;
+}
+
+[data-theme='matrix'] .theme-text {
+  text-shadow: 0 0 4px #00FF00;
+}
+
+[data-theme='dracula'] {
+  --theme-bg: #282a36;
+  --theme-primary: #ff79c6;
+  --theme-text: #f8f8f2;
+  --theme-secondary: #6272a4;
+  --theme-border: #44475a;
+  --theme-accent: #bd93f9;
+  --theme-link: #8be9fd;
+}
+
+[data-theme='dracula'] section {
+  background-color: rgba(68, 71, 90, 0.4);
+}
+
+[data-theme='dracula'] .theme-primary {
+  text-shadow: 0 0 8px #ff79c6;
+}
+
+/* Add Marvel theme */
+[data-theme='marvel'] {
+  --theme-bg: #1A1D24;
+  --theme-primary: #64D2FF;
+  --theme-text: #FFFFFF;
+  --theme-secondary: #FFD700;
+  --theme-border: rgba(100, 210, 255, 0.3);
+  --theme-accent: #64D2FF;
+}
+
+[data-theme='marvel'] section {
+  background: linear-gradient(
+    135deg,
+    rgba(139, 0, 0, 0.95) 0%,
+    rgba(30, 41, 59, 0.95) 100%
+  );
+  border: 1px solid var(--theme-border);
+  box-shadow: 0 0 20px rgba(100, 210, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+[data-theme='marvel'] .command-prompt {
+  animation: arcReactorPulse 2s infinite;
+}
+
+[data-theme='marvel'] .terminal-entry {
+  animation: jarvisBooting 0.3s ease-out;
+}
+
+[data-theme='marvel'] .theme-primary {
+  background: linear-gradient(90deg, #64D2FF, #3490dc);
+  -webkit-background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 10px rgba(100, 210, 255, 0.5);
+}
+
+[data-theme='marvel'] input {
+  border: 1px solid var(--theme-border);
+  background: linear-gradient(90deg, 
+    rgba(100, 210, 255, 0.1), 
+    rgba(100, 210, 255, 0.05)
+  );
+}
+
+/* Theme styles application */
+.theme-bg {
+  background-color: var(--theme-bg);
+}
+
+.theme-text {
+  color: var(--theme-text);
+}
+
+.theme-primary {
+  color: var(--theme-primary);
+}
+
+.theme-border {
+  border-color: var(--theme-border);
+}
+
+.theme-section-bg {
+  background-color: color-mix(in srgb, var(--theme-bg) 60%, transparent);
 }
 
 body {
