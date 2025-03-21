@@ -11,8 +11,8 @@ export default function MatrixBackground() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    const context = canvas.getContext('2d');
+    if (!context) return;
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -26,19 +26,21 @@ export default function MatrixBackground() {
     }
 
     function draw() {
-      ctx.fillStyle = theme === 'matrix' ? 
+      if (!context || !canvas) return; // Add null check for TypeScript and canvas
+
+      context.fillStyle = theme === 'matrix' ? 
         'rgba(0, 0, 0, 0.1)' : 
         'rgba(1, 36, 86, 0.05)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      context.fillRect(0, 0, canvas.width, canvas.height);
 
-      ctx.fillStyle = theme === 'matrix' ? 
+      context.fillStyle = theme === 'matrix' ? 
         '#00FF00' : 
         '#16C60C';
-      ctx.font = '15px monospace';
+      context.font = '15px monospace';
 
       for (let i = 0; i < drops.length; i++) {
         const text = characters[Math.floor(Math.random() * characters.length)];
-        ctx.fillText(text, i * 20, drops[i] * 20);
+        context.fillText(text, i * 20, drops[i] * 20);
 
         if (drops[i] * 20 > canvas.height && Math.random() > 0.975) {
           drops[i] = 0;

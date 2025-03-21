@@ -82,6 +82,7 @@ export default function Snake() {
 
   useEffect(() => {
     const handleKeydown = (e: KeyboardEvent) => {
+      if (gameOver) return;
       switch (e.key) {
         case 'ArrowUp': setDirection('up'); break;
         case 'ArrowDown': setDirection('down'); break;
@@ -99,7 +100,7 @@ export default function Snake() {
       window.removeEventListener('keydown', handleKeydown);
       clearInterval(gameInterval);
     };
-  }, [moveSnake, speed]); // Add speed to dependencies
+  }, [moveSnake, speed, gameOver]); // Add gameOver to dependencies
 
   const cellColor = theme === 'matrix' ? '#00FF00' : 
                    theme === 'ubuntu' ? '#E95420' : '#16C60C';

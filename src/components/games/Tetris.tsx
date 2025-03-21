@@ -103,21 +103,17 @@ export default function Tetris() {
     if (isValidMove(currentPiece, 0, 1)) {
       setCurrentPiece(prev => prev && { ...prev, y: prev.y + 1 });
     } else {
-      // Check if game over
       if (currentPiece.y <= 1) {
         setGameOver(true);
         return;
       }
       
-      // Lock piece and check for line clears
       const newBoard = mergePieceToBoard(currentPiece);
       const clearedBoard = clearLines(newBoard);
       setBoard(clearedBoard);
-      
-      // Spawn new piece
       setCurrentPiece(getRandomTetromino());
     }
-  }, [currentPiece, board, paused, gameOver]);
+  }, [currentPiece, paused, gameOver, board, isValidMove, mergePieceToBoard]);
 
   useEffect(() => {
     const initialBoard = createEmptyBoard();
@@ -126,7 +122,7 @@ export default function Tetris() {
     setGameOver(false);
     setPaused(false);
     setScore(0);
-  }, []);
+  }, [createEmptyBoard]);
 
   useEffect(() => {
     const gameLoop = setInterval(() => {
@@ -176,7 +172,7 @@ export default function Tetris() {
 
     window.addEventListener('keydown', handleKeydown);
     return () => window.removeEventListener('keydown', handleKeydown);
-  }, [currentPiece, paused, gameOver, moveDown]);
+  }, [currentPiece, paused, gameOver, moveDown, createEmptyBoard, isValidMove, rotatePiece]);
 
   const boardWithPiece = board.map(row => [...row]);
   if (currentPiece) {
