@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react';
-import { useTheme } from '@/context/ThemeContext';
 
 const BOARD_WIDTH = 10;
 const BOARD_HEIGHT = 20;
@@ -25,7 +24,6 @@ const TETROMINOS = {
 };
 
 export default function Tetris() {
-  const { theme } = useTheme();
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [paused, setPaused] = useState(false);
@@ -119,7 +117,7 @@ export default function Tetris() {
       // Spawn new piece
       setCurrentPiece(getRandomTetromino());
     }
-  }, [currentPiece, board, paused, gameOver]);
+  }, [currentPiece, paused, gameOver, isValidMove, mergePieceToBoard]);
 
   useEffect(() => {
     const initialBoard = createEmptyBoard();
@@ -128,7 +126,7 @@ export default function Tetris() {
     setGameOver(false);
     setPaused(false);
     setScore(0);
-  }, []);
+  }, [createEmptyBoard]);
 
   useEffect(() => {
     const gameLoop = setInterval(() => {
@@ -178,7 +176,7 @@ export default function Tetris() {
 
     window.addEventListener('keydown', handleKeydown);
     return () => window.removeEventListener('keydown', handleKeydown);
-  }, [currentPiece, paused, gameOver, moveDown]);
+  }, [currentPiece, paused, gameOver, createEmptyBoard, isValidMove, rotatePiece]);
 
   const boardWithPiece = board.map(row => [...row]);
   if (currentPiece) {

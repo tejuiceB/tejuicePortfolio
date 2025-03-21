@@ -37,6 +37,25 @@ const marvelQuotes = [
   "JARVIS: Power at optimal levels.",
 ];
 
+interface GithubData {
+  login: string;
+  public_repos: number;
+  followers: number;
+  following: number;
+  created_at: string;
+}
+
+interface GithubCommit {
+  sha: string;
+  message: string;
+}
+
+interface GithubPR {
+  number: number;
+  title: string;
+  state: string;
+}
+
 export default function ThemeCommand() {
   const { theme, setTheme } = useTheme();
   const [stage, setStage] = useState(0);
@@ -214,7 +233,7 @@ export default function ThemeCommand() {
     } else if (cmd === 'gh status') {
       setHistory(prev => [...prev, 'Fetching GitHub status...']);
       githubService.getGithubStats()
-        .then(data => {
+        .then((data: GithubData) => {
           setHistory(prev => [...prev,
             '',
             `GitHub Profile: ${data.login}`,
@@ -242,13 +261,12 @@ export default function ThemeCommand() {
     } else if (cmd === 'gh commits') {
       setHistory(prev => [...prev, 'Fetching recent commits...']);
       githubService.getCommits()
-        .then(commits => {
+        .then((commits: GithubCommit[]) => {
           setHistory(prev => [
             ...prev,
             '',
             'Recent commits:',
-            ...commits.slice(0, 5).map((event: any) => {
-              const commit = event.payload.commits[0];
+            ...commits.slice(0, 5).map((commit: GithubCommit) => {
               return `${commit.sha.substring(0, 7)} - ${commit.message}`;
             })
           ]);
@@ -257,12 +275,12 @@ export default function ThemeCommand() {
     } else if (cmd === 'gh prs') {
       setHistory(prev => [...prev, 'Fetching pull requests...']);
       githubService.getPullRequests()
-        .then(data => {
+        .then((data: { items: GithubPR[] }) => {
           setHistory(prev => [
             ...prev,
             '',
             'Pull Requests:',
-            ...data.items.map((pr: any) => 
+            ...data.items.map((pr: GithubPR) => 
               `#${pr.number} - ${pr.title} (${pr.state})`
             )
           ]);
@@ -292,14 +310,7 @@ export default function ThemeCommand() {
       // ...rest of existing gh command handling...
     } else if (cmd.startsWith('morse ')) {
       const [_, action] = cmd.split(' ');
-      if (['encode', 'decode', 'learn'].includes(action)) {
-        setMorseMode(action as any);
-        setCurrentGame('morse');
-      } else if (action === 'close') {
-        setCurrentGame(null);
-      } else {
-        setHistory(prev => [...prev, 'Invalid morse command. Use "morse --help" for usage']);
-      }
+      handleMorseCommand(action);
     } else if (Object.keys(themes).includes(cmd)) {
       setTheme(cmd as any);
       setHistory(prev => [...prev, `Switching to ${cmd} theme...`]);
@@ -317,6 +328,14 @@ export default function ThemeCommand() {
     }
 
     setCommand('');
+  };
+
+
+  const handleMorseCommand = (action: string) => {
+    if (['encode', 'decode', 'learn'].includes(action)) {
+      setMorseMode(action as 'encode' | 'decode' | 'learn');
+      setCurrentGame('morse');
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
