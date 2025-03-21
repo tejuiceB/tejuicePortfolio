@@ -164,7 +164,7 @@ export default function Home() {
               />
               <div className="pl-4 border-l-2 border-[#16C60C] space-y-6 mt-4">
                 <div className="terminal-entry group hover:bg-[#012456]/50 p-3 rounded transition-colors">
-                  <p className="font-bold theme-primary">BTech in AI & ML</p>
+                  <p className="font-bold theme-primary">BTech in Computer Science (Artificial Intelligence and Machine Learning)</p>
                   <p className="text-[#16C60C]">YCCE, Nagpur</p>
                   <p className="text-sm text-gray-400">2022 - 2025</p>
                 </div>
