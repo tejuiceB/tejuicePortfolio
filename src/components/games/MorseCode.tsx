@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 
-const MORSE_CODE = {
+const MORSE_CODE: { [key: string]: string } = {
   // Letters
   'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.',
   'G': '--.', 'H': '....', 'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..',
@@ -33,8 +33,14 @@ export default function MorseCode({ mode }: MorseCodeProps) {
   const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
 
   useEffect(() => {
-    setAudioContext(new AudioContext());
-    return () => audioContext?.close();
+    const context = new AudioContext();
+    setAudioContext(context);
+    
+    return () => {
+      if (context) {
+        context.close();
+      }
+    };
   }, []);
 
   const playBeep = async (isDot: boolean) => {
@@ -67,7 +73,7 @@ export default function MorseCode({ mode }: MorseCodeProps) {
       setOutput(encoded);
     } else if (mode === 'decode') {
       const decoded = text.split(' ').map(code => {
-        const char = Object.entries(MORSE_CODE).find(([_, m]) => m === code);
+        const char = Object.entries(MORSE_CODE).find(([, m]) => m === code);
         return char ? char[0] : code;
       }).join('');
       setOutput(decoded);
